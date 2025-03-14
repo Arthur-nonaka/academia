@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as a parent image.
-FROM 22-bookworm
+FROM node:22-bookworm
 
 # Set the working directory.
 WORKDIR /workspace
