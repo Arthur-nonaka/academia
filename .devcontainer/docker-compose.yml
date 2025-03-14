@@ -2,8 +2,8 @@ version: "3"
 services:
   node:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
     volumes:
       - ..:/workspace:cached
     command: sleep infinity
