@@ -1,15 +1,25 @@
 import connection from "../db";
 
 export async function getStudents() {
+  const sql = "SELECT * FROM aluno";
   try {
-    const [rows] = await connection.query("SELECT * FROM aluno");
+    const [rows] = await connection.query(sql);
     return rows;
   } catch (err) {
-    return false;
+    return {error : err.message};
   }
 }
 
-export async function getStudentByID() {}
+export async function getStudentByID(id: string) {
+  const sql = "SELECT * FROM alundo WHERE id = ?";
+  try {
+    const [rows] = await connection.query(sql, [id]);
+    return rows;
+  }   
+  catch(err) {
+    return {error : err.message};
+  }
+}
 
 export async function createStudent(
   nome: string,
