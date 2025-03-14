@@ -9,7 +9,7 @@ RUN npm install -g typescript
 
 # Copy package.json and package-lock.json (if available) and install dependencies.
 COPY package*.json ./
-RUN npm install
+RUN npm install --unsafe-perm --verbose
 
 # Copy the rest of your app's source code.
 COPY . .
