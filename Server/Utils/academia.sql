@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS plano (
 CREATE TABLE IF NOT EXISTS matricula (
     id_matricula INT AUTO_INCREMENT PRIMARY KEY,
     data_matricula DATE NOT NULL,
-    status_matricula VARCHAR(20),
+    status VARCHAR(20),
     id_aluno INT NOT NULL,
     id_professor INT NOT NULL,
     id_plano INT NOT NULL,
