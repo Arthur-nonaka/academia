@@ -19,7 +19,7 @@
     }
   },
   "postCreateCommand": "npm install",
-  "forwardPorts": [3000, 3306],
+  "forwardPorts": [3000, 3306, 3001],
   "portsAttributes": {
     "3001": {
       "visibility": "public"
