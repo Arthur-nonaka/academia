@@ -21,17 +21,16 @@ CREATE TABLE IF NOT EXISTS professor (
     cpf VARCHAR(14),
     email VARCHAR(100),
     telefone VARCHAR(20),
-    especialidade VARCHAR(100),
     data_admissao DATE
 ) ENGINE = InnoDB;
 
 -- Tabela PLANO
 CREATE TABLE IF NOT EXISTS plano (
     id_plano INT AUTO_INCREMENT PRIMARY KEY,
-    nome_plano VARCHAR(100) NOT NULL,
+    nome VARCHAR(100) NOT NULL,
     descricao VARCHAR(255),
     valor DECIMAL(10,2),
-    duracao_meses INT
+    duracao INT
 ) ENGINE = InnoDB;
 
 -- Tabela MATRICULA
