@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Breadcrumb, Button, Col, Container, Form, Row } from "react-bootstrap";
+import { createStudent } from "../services/StudentServices";
+import { useNavigate } from "react-router-dom";
 
 const StudentRegisterPage = () => {
   const [data, setData] = useState({
@@ -11,12 +13,14 @@ const StudentRegisterPage = () => {
     endereco: "",
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setData({ ...data, [name]: value });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     const isFormValid = Object.values(data).every(
@@ -28,30 +32,24 @@ const StudentRegisterPage = () => {
       return;
     }
 
-    createStudent();
-  };
-
-  async function createStudent() {
     try {
-      const response = await fetch("http://127.0.0.1:3001/api/student", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const response = await createStudent(data);
+      alert("Aluno registrado com sucesso!");
+      console.log("Student created:", response);
+      setData({
+        nome: "",
+        email: "",
+        telefone: "",
+        cpf: "",
+        dataNascimento: "",
+        endereco: "",
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error: any) {
-      console.error("Error creating student:", error.message);
-      throw error;
+      navigate("/alunos");
+    } catch (error) {
+      console.error("Erro ao registrar aluno:", error);
+      alert("Erro ao registrar aluno. Tente novamente.");
     }
-  }
+  };
 
   return (
     <Container>
@@ -68,6 +66,7 @@ const StudentRegisterPage = () => {
               <Form.Control
                 type="text"
                 name="nome"
+                value={data.nome}
                 onChange={handleChange}
                 placeholder="Nome"
               />
@@ -81,6 +80,7 @@ const StudentRegisterPage = () => {
               <Form.Control
                 type="text"
                 name="email"
+                value={data.email}
                 onChange={handleChange}
                 placeholder="Email"
               />
@@ -92,6 +92,7 @@ const StudentRegisterPage = () => {
               <Form.Control
                 type="text"
                 name="telefone"
+                value={data.telefone}
                 onChange={handleChange}
                 placeholder="(00) 00000-0000"
               />
@@ -105,6 +106,7 @@ const StudentRegisterPage = () => {
               <Form.Control
                 type="text"
                 name="cpf"
+                value={data.cpf}
                 onChange={handleChange}
                 placeholder="CPF"
               />
@@ -115,7 +117,8 @@ const StudentRegisterPage = () => {
               <Form.Label>Data de Nascimento</Form.Label>
               <Form.Control
                 type="date"
-                name="dataNasciment"
+                name="dataNascimento"
+                value={data.dataNascimento}
                 onChange={handleChange}
               />
             </Form.Group>
@@ -127,6 +130,7 @@ const StudentRegisterPage = () => {
             <Form.Control
               type="text"
               name="endereco"
+              value={data.endereco}
               onChange={handleChange}
               placeholder="Endereço"
             />
