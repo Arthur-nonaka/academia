@@ -6,11 +6,11 @@ function mapRowToPersonal(row: RowDataPacket): Personal {
   return {
     id: row.id_professor,
     nome: row.nome,
-    dataNascimento: new Date(row.data_nascimento),
+    dataNascimento: row.data_nascimento,
     cpf: row.cpf,
     email: row.email,
     telefone: row.telefone,
-    dataAdmissao: new Date(row.data_admissao),
+    dataAdmissao: row.data_admissao,
   } as Personal;
 }
 

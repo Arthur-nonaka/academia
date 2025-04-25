@@ -3,16 +3,16 @@ import Person from "./PersonModel";
 export default class Student extends Person {
   id?: string;
   endereco: string;
-  dataCadastro: Date;
+  dataCadastro: string;
 
   constructor(
     nome: string,
-    dataNascimento: Date,
+    dataNascimento: string,
     cpf: string,
     email: string,
     telefone: string,
     endereco: string,
-    dataCadastro: Date
+    dataCadastro: string
   ) {
     super(nome, dataNascimento, cpf, email, telefone);
     this.endereco = endereco;
@@ -27,11 +27,11 @@ export default class Student extends Person {
     this.endereco = endereco;
   }
 
-  public getDataCadastro(): Date {
+  public getDataCadastro(): string {
     return this.dataCadastro;
   }
 
-  public setDataCadastro(dataCadastro: Date): void {
+  public setDataCadastro(dataCadastro: string): void {
     this.dataCadastro = dataCadastro;
   }
 }

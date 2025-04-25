@@ -3,11 +3,32 @@ import studentServices from "../Services/StudentServices";
 import Student from "../Models/StudentModel";
 
 export async function getStudents(req: Request, res: Response) {
-  try {
-    const students = await studentServices.getStudents();
+  const { nome, dataNascimento, cpf, email, telefone } = req.query;
 
-    if (students) {
-      res.status(200).json(students);
+  try {
+    let students;
+    if (nome || dataNascimento || cpf || email || telefone) {
+      students = await studentServices.getFilteredStudents({
+        nome: nome as string,
+        dataNascimento: dataNascimento as string,
+        cpf: cpf as string,
+        email: email as string,
+        telefone: telefone as string,
+      });
+    } else {
+      students = await studentServices.getStudents();
+    }
+
+    const formattedStudents = students.map((student) => ({
+      ...student,
+      dataNascimento: new Date(student.dataNascimento)
+        .toISOString()
+        .split("T")[0],
+      dataCadastro: new Date(student.dataCadastro).toISOString().split("T")[0],
+    }));
+
+    if (formattedStudents) {
+      res.status(200).json(formattedStudents);
     } else {
       res.status(404).json({ message: "Nenhum aluno encontrado" });
       return;
@@ -23,6 +44,12 @@ export async function getStudentById(req: Request, res: Response) {
   try {
     const student = await studentServices.getStudentById(id);
 
+    student[0].dataNascimento = new Date(student[0].dataNascimento)
+      .toISOString()
+      .split("T")[0];
+    student[0].dataCadastro = new Date(student[0].dataCadastro)
+      .toISOString()
+      .split("T")[0];
     if (student) {
       res.status(200).json(student);
     } else {
@@ -45,12 +72,12 @@ export async function createStudent(req: Request, res: Response) {
 
   const student = new Student(
     nome,
-    new Date(dataNascimento),
+    dataNascimento,
     cpf,
     email,
     telefone,
     endereco,
-    new Date()
+    new Date().toISOString().split("T")[0]
   );
 
   try {
@@ -58,7 +85,9 @@ export async function createStudent(req: Request, res: Response) {
 
     res.status(201).json({ message: "Aluno cadastrado com sucesso" });
   } catch (err: any) {
-    res.status(500).json({ message: "Erro ao cadastrar aluno: " + err.message });
+    res
+      .status(500)
+      .json({ message: "Erro ao cadastrar aluno: " + err.message });
   }
 }
 
@@ -78,12 +107,13 @@ export async function updateStudent(req: Request, res: Response) {
 
     const student = new Student(
       nome || existingStudent.nome,
-      dataNascimento || new Date(existingStudent.dataNascimento),
+      dataNascimento ||
+        new Date(existingStudent.dataNascimento).toISOString().split("T")[0],
       cpf || existingStudent.cpf,
       email || existingStudent.email,
       telefone || existingStudent.telefone,
       endereco || existingStudent.endereco,
-      new Date(existingStudent.dataCadastro)
+      existingStudent.dataCadastro
     );
 
     await studentServices.updateStudent(student, id);

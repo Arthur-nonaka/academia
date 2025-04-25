@@ -25,6 +25,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/alunos" element={<StudentPage />} />
           <Route path="/alunos/registrar" element={<StudentRegisterPage />} />
+          <Route path="/alunos/atualizar/:id" element={<StudentRegisterPage />} />
         </Routes>
       </Container>
     </Router>

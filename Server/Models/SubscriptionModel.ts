@@ -1,13 +1,13 @@
 export default class Subscription {
   id?: string;
-  dataMatricula: Date;
+  dataMatricula: string;
   status: string;
   idAluno: string;
   idPlano: string;
   idPersonal: string;
 
   constructor(
-    dataMatricula: Date,
+    dataMatricula: string,
     status: string,
     idAluno: string,
     idPersonal: string,
@@ -28,11 +28,11 @@ export default class Subscription {
     this.id = id;
   }
 
-  public getDataMatricula(): Date {
+  public getDataMatricula(): string {
     return this.dataMatricula;
   }
 
-  public setDataMatricula(dataMatricula: Date): void {
+  public setDataMatricula(dataMatricula: string): void {
     this.dataMatricula = dataMatricula;
   }
 

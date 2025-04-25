@@ -1,12 +1,13 @@
 import axios from "axios";
 const API_URL = "https://super-duper-fiesta-55vr6w797x734qrw-3001.app.github.dev/api/";
 
-export const getStudents = async () => {
+export const getStudents = async (filters?: any) => {
   try {
     const response = await axios.get(API_URL + "student", {
       headers: {
         "Content-Type": "application/json",
       },
+      params: filters,
     });
     return response.data;
   } catch (error) {

@@ -1,13 +1,13 @@
 export default class Person {
   nome: string;
-  dataNascimento: Date;
+  dataNascimento: string;
   cpf: string;
   email: string;
   telefone: string;
 
   constructor(
     nome: string,
-    dataNascimento: Date,
+    dataNascimento: string,
     cpf: string,
     email: string,
     telefone: string
@@ -27,11 +27,11 @@ export default class Person {
     this.nome = nome;
   }
 
-  public getDataNascimento(): Date {
+  public getDataNascimento(): string {
     return this.dataNascimento;
   }
 
-  public setDataNascimento(dataNascimento: Date): void {
+  public setDataNascimento(dataNascimento: string): void {
     this.dataNascimento = dataNascimento;
   }
 

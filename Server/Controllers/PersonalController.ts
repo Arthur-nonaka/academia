@@ -49,11 +49,11 @@ export async function createPersonal(req: Request, res: Response) {
 
   const personal = new Personal(
     nome,
-    new Date(dataNascimento),
+    dataNascimento,
     cpf,
     email,
     telefone,
-    new Date()
+    new Date().toISOString().split("T")[0]
   );
 
   try {
@@ -83,11 +83,11 @@ export async function updatePersonal(req: Request, res: Response) {
 
     const personal = new Personal(
       nome || existingPersonal.nome,
-      dataNascimento || new Date(existingPersonal.dataNascimento),
+      dataNascimento || existingPersonal.dataNascimento,
       cpf || existingPersonal.cpf,
       email || existingPersonal.email,
       telefone || existingPersonal.telefone,
-      new Date(existingPersonal.dataAdmissao)
+      existingPersonal.dataAdmissao
     );
 
     await personalServices.updatePersonal(personal, id);

@@ -6,12 +6,12 @@ function mapRowToStudent(row: RowDataPacket): Student {
   return {
     id: row.id_aluno,
     nome: row.nome,
-    dataNascimento: new Date(row.data_nascimento),
+    dataNascimento: row.data_nascimento,
     cpf: row.cpf,
     email: row.email,
     telefone: row.telefone,
     endereco: row.endereco,
-    dataCadastro: new Date(row.data_cadastro),
+    dataCadastro: row.data_cadastro,
   } as Student;
 }
 
@@ -29,6 +29,56 @@ export async function getStudentById(id: string): Promise<Student[]> {
   const sql = "SELECT * FROM aluno WHERE id_aluno = ?";
   try {
     const [rows] = await connection.query<RowDataPacket[]>(sql, [id]);
+    return rows.map(mapRowToStudent);
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+}
+
+export async function getFilteredStudents({
+  nome,
+  dataNascimento,
+  cpf,
+  email,
+  telefone,
+}: {
+  nome?: string;
+  dataNascimento?: string;
+  cpf?: string;
+  email?: string;
+  telefone?: string;
+}) {
+  let sql = "SELECT * FROM aluno WHERE 1=1";
+  const params: string[] = [];
+  if (nome) {
+    sql += " AND nome LIKE ?";
+    params.push(`%${nome}%`);
+  }
+  if (dataNascimento) {
+    sql += " AND data_nascimento = ?";
+    params.push(dataNascimento);
+  }
+  if (cpf) {
+    sql += " AND cpf = ?";
+    params.push(`%${cpf}%`);
+  }
+  if (email) {
+    sql += " AND email = ?";
+    params.push(`%${email}%`);
+  }
+  if (telefone) {
+    sql += " AND telefone = ?";
+    params.push(`%${telefone}%`);
+  }
+
+  try {
+    const [rows] = await connection.query<RowDataPacket[]>(sql, [
+      nome,
+      dataNascimento,
+      cpf,
+      email,
+      telefone,
+    ]);
     return rows.map(mapRowToStudent);
   } catch (err: any) {
     throw new Error(err.message);
@@ -107,4 +157,5 @@ export default {
   createStudent,
   updateStudent,
   deleteStudent,
+  getFilteredStudents,
 };

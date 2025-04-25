@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Col, Container, Form, Row } from "react-bootstrap";
-import { createStudent } from "../services/StudentServices";
-import { useNavigate } from "react-router-dom";
+import {
+  createStudent,
+  getStudentById,
+  updateStudent,
+} from "../services/StudentServices";
+import { maskCPF, maskPhone } from "../utils/maskUtils";
+import { useNavigate, useParams } from "react-router-dom";
 
 const StudentRegisterPage = () => {
   const [data, setData] = useState({
@@ -14,6 +19,33 @@ const StudentRegisterPage = () => {
   });
 
   const navigate = useNavigate();
+
+  const { id } = useParams<{ id: string }>();
+
+  useEffect(() => {
+    const fetchStudent = async (id: string) => {
+      try {
+        const result = await getStudentById(id);
+        const student = result[0];
+        console.log(student);
+        setData({
+          nome: student.nome || "",
+          email: student.email || "",
+          telefone: student.telefone || "",
+          cpf: student.cpf || "",
+          dataNascimento: student.dataNascimento || "",
+          endereco: student.endereco || "",
+        });
+      } catch (err) {
+        console.log("Error fetching student: " + err);
+        alert("Erro ao buscar aluno.");
+      }
+    };
+
+    if (id) {
+      fetchStudent(id);
+    }
+  }, [id]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -32,22 +64,39 @@ const StudentRegisterPage = () => {
       return;
     }
 
-    try {
-      const response = await createStudent(data);
-      alert("Aluno registrado com sucesso!");
-      console.log("Student created:", response);
-      setData({
-        nome: "",
-        email: "",
-        telefone: "",
-        cpf: "",
-        dataNascimento: "",
-        endereco: "",
-      });
-      navigate("/alunos");
-    } catch (error) {
-      console.error("Erro ao registrar aluno:", error);
-      alert("Erro ao registrar aluno. Tente novamente.");
+    if (id) {
+      try {
+        await updateStudent(id, data);
+        setData({
+          nome: "",
+          email: "",
+          telefone: "",
+          cpf: "",
+          dataNascimento: "",
+          endereco: "",
+        });
+        navigate("/alunos");
+      } catch (err) {
+        console.log("Erro ao atualizar aluno: " + err);
+        alert("Erro ao atualizar aluno." + err);
+      }
+    } else {
+      try {
+        const response = await createStudent(data);
+        console.log("Student created:", response);
+        setData({
+          nome: "",
+          email: "",
+          telefone: "",
+          cpf: "",
+          dataNascimento: "",
+          endereco: "",
+        });
+        navigate("/alunos");
+      } catch (error) {
+        console.error("Erro ao registrar aluno:", error);
+        alert("Erro ao registrar aluno. Tente novamente.");
+      }
     }
   };
 
@@ -55,7 +104,9 @@ const StudentRegisterPage = () => {
     <Container>
       <Breadcrumb>
         <Breadcrumb.Item href="/alunos">Alunos</Breadcrumb.Item>
-        <Breadcrumb.Item active>Registrar Aluno</Breadcrumb.Item>
+        <Breadcrumb.Item active>
+          {id ? "Atualizar" : "Registrar"} Aluno
+        </Breadcrumb.Item>
       </Breadcrumb>
 
       <Form onSubmit={handleSubmit}>
@@ -93,8 +144,11 @@ const StudentRegisterPage = () => {
                 type="text"
                 name="telefone"
                 value={data.telefone}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setData({ ...data, telefone: maskPhone(e.target.value) })
+                }
                 placeholder="(00) 00000-0000"
+                maxLength={15}
               />
             </Form.Group>
           </Col>
@@ -107,8 +161,11 @@ const StudentRegisterPage = () => {
                 type="text"
                 name="cpf"
                 value={data.cpf}
-                onChange={handleChange}
+                onChange={(e) =>
+                  setData({ ...data, cpf: maskCPF(e.target.value) })
+                }
                 placeholder="CPF"
+                maxLength={14}
               />
             </Form.Group>
           </Col>
@@ -138,7 +195,7 @@ const StudentRegisterPage = () => {
         </Row>
 
         <Button variant="primary" type="submit">
-          Registrar
+          {id ? "Atualizar" : "Registrar"}
         </Button>
       </Form>
     </Container>
