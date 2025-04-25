@@ -4,11 +4,11 @@ import {
   createStudent,
   getStudentById,
   updateStudent,
-} from "../services/StudentServices";
-import { maskCPF, maskPhone } from "../utils/maskUtils";
+} from "../../services/StudentServices";
+import { maskCPF, maskPhone } from "../../utils/maskUtils";
 import { useNavigate, useParams } from "react-router-dom";
 
-const StudentRegisterPage = () => {
+const PersonalRegisterPage = () => {
   const [data, setData] = useState({
     nome: "",
     email: "",
@@ -202,4 +202,4 @@ const StudentRegisterPage = () => {
   );
 };
 
-export default StudentRegisterPage;
+export default PersonalRegisterPage;

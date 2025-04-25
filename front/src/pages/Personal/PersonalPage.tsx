@@ -9,10 +9,10 @@ import {
   Row,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { getStudents, deleteStudent } from "../services/StudentServices";
-import { maskCPF, maskPhone } from "../utils/maskUtils";
+import { getStudents, deleteStudent } from "../../services/StudentServices";
+import { maskCPF, maskPhone } from "../../utils/maskUtils";
 
-const StudentPage = () => {
+const PersonalPage = () => {
   const [students, setStudents] = useState([]);
   const [filters, setFilters] = useState({
     nome: "",
@@ -133,7 +133,6 @@ const StudentPage = () => {
               <Form.Label>Data de Nascimento</Form.Label>
               <Form.Control
                 type="date"
-                placeholder="Data de Nascimento"
                 value={filters.dataNascimento}
                 onChange={(e) =>
                   setFilters({ ...filters, dataNascimento: e.target.value })
@@ -145,14 +144,6 @@ const StudentPage = () => {
         <Row className="mt-3">
           <Col>
             <Button
-              variant="primary"
-              onClick={() => {
-                fetchStudents();
-              }}
-            >
-              Filtrar
-            </Button>{" "}
-            <Button
               variant="secondary"
               onClick={() => {
                 setFilters({
@@ -162,7 +153,6 @@ const StudentPage = () => {
                   cpf: "",
                   dataNascimento: "",
                 });
-                fetchStudents();
               }}
             >
               Limpar Filtros
@@ -181,7 +171,7 @@ const StudentPage = () => {
             <th>Cadastro</th>
             <th>
               {" "}
-              <Button variant="light" onClick={handleRefresh}>
+              <Button variant="secondary" onClick={handleRefresh}>
                 ⟳
               </Button>{" "}
             </th>
@@ -218,4 +208,4 @@ const StudentPage = () => {
   );
 };
 
-export default StudentPage;
+export default PersonalPage;
