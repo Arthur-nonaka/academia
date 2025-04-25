@@ -59,26 +59,20 @@ export async function getFilteredStudents({
     params.push(dataNascimento);
   }
   if (cpf) {
-    sql += " AND cpf = ?";
+    sql += " AND cpf LIKE ?";
     params.push(`%${cpf}%`);
   }
   if (email) {
-    sql += " AND email = ?";
+    sql += " AND email LIKE ?";
     params.push(`%${email}%`);
   }
   if (telefone) {
-    sql += " AND telefone = ?";
+    sql += " AND telefone LIKE ?";
     params.push(`%${telefone}%`);
   }
 
   try {
-    const [rows] = await connection.query<RowDataPacket[]>(sql, [
-      nome,
-      dataNascimento,
-      cpf,
-      email,
-      telefone,
-    ]);
+    const [rows] = await connection.query<RowDataPacket[]>(sql, params);
     return rows.map(mapRowToStudent);
   } catch (err: any) {
     throw new Error(err.message);
