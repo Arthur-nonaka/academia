@@ -50,6 +50,8 @@ const SubscriptionPage = () => {
     }
   }, [filters]);
 
+  console.log(prevData);
+
   useEffect(() => {
     fetchSubscriptions();
 
@@ -102,7 +104,7 @@ const SubscriptionPage = () => {
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setPrevData({ ...prevData, [name]: value });
+    setFilters({ ...filters, [name]: value });
   };
 
   const handleUpdate = async (id: string) => {
@@ -137,7 +139,7 @@ const SubscriptionPage = () => {
                 <option value={""}>Selecione o Aluno</option>
                 {prevData.alunos.map((aluno) => {
                   return (
-                    <option key={aluno.id_aluno} value={aluno.id_aluno}>
+                    <option key={aluno.id} value={aluno.id}>
                       {aluno.nome}
                     </option>
                   );
@@ -156,7 +158,7 @@ const SubscriptionPage = () => {
                 <option value={""}>Selecione o Professor</option>
                 {prevData.personals.map((aluno) => {
                   return (
-                    <option key={aluno.id_professor} value={aluno.id_professor}>
+                    <option key={aluno.id} value={aluno.id}>
                       {aluno.nome}
                     </option>
                   );
@@ -221,9 +223,8 @@ const SubscriptionPage = () => {
           {subscriptions.map((Subscription: any, index: number) => (
             <tr key={Subscription.id_matricula}>
               <td>
-                {prevData.alunos.find(
-                  (a) => a.id === Subscription.idAluno
-                )?.nome || Subscription.idAluno}
+                {prevData.alunos.find((a) => a.id === Subscription.idAluno)
+                  ?.nome || Subscription.idAluno}
               </td>
               <td>
                 {prevData.personals.find(

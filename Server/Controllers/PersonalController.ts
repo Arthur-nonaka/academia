@@ -3,8 +3,21 @@ import personalServices from "../Services/PersonalServices";
 import Personal from "../Models/PersonalModel";
 
 export async function getPersonals(req: Request, res: Response) {
+  const { nome, dataNascimento, cpf, email, telefone } = req.query;
+
   try {
-    const personals = await personalServices.getPersonals();
+    let personals;
+    if (nome || dataNascimento || cpf || email || telefone) {
+      personals = await personalServices.getFilteredPersonals({
+        nome: nome as string,
+        dataNascimento: dataNascimento as string,
+        cpf: cpf as string,
+        email: email as string,
+        telefone: telefone as string,
+      });
+    } else {
+      personals = await personalServices.getPersonals();
+    }
 
     const formatted = personals.map((student) => ({
       ...student,

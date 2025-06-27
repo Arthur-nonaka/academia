@@ -32,6 +32,7 @@ const SubscriptionRegisterPage = () => {
   });
 
   console.log(prevData);
+  console.log(data);
 
   const navigate = useNavigate();
 
@@ -42,11 +43,12 @@ const SubscriptionRegisterPage = () => {
       try {
         const result = await getSubscriptionById(id);
         const subscription = result[0];
+        console.log(subscription);
         setData({
           status: subscription.status || "",
-          idAluno: subscription.id_aluno || "",
-          idPersonal: subscription.id_professor || "",
-          idPlano: subscription.id_plano || "",
+          idAluno: subscription.idAluno || "",
+          idPersonal: subscription.idPersonal || "",
+          idPlano: subscription.idPlano || "",
         });
       } catch (err) {
         console.log("Error fetching Subscription: " + err);
@@ -101,11 +103,7 @@ const SubscriptionRegisterPage = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    const isFormValid = Object.values(data).every(
-      (value) => value.trim() !== ""
-    );
-
-    if (!isFormValid) {
+    if (!data.status || !data.idAluno || !data.idPersonal || !data.idPlano) {
       alert("Por favor, preencha todos os campos.");
       return;
     }
@@ -119,7 +117,7 @@ const SubscriptionRegisterPage = () => {
           idPersonal: "",
           idPlano: "",
         });
-        navigate("/matriculas");
+        navigate("/assinaturas");
       } catch (err) {
         console.log("Erro ao atualizar matricula: " + err);
         alert("Erro ao atualizar matricula." + err);
@@ -134,7 +132,7 @@ const SubscriptionRegisterPage = () => {
           idPersonal: "",
           idPlano: "",
         });
-        navigate("/matriculas");
+        navigate("/assinaturas");
       } catch (error) {
         console.error("Erro ao registrar matricula:", error);
         alert("Erro ao registrar aluno. Tente novamente.");

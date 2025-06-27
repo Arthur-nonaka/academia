@@ -62,7 +62,7 @@ function App() {
             element={<SubscriptionRegisterPage />}
           />
           <Route
-            path="/assinatura/atualizar/:id"
+            path="/assinaturas/atualizar/:id"
             element={<SubscriptionRegisterPage />}
           />
         </Routes>

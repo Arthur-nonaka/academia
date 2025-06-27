@@ -23,6 +23,38 @@ export async function getSubscriptions(): Promise<Subscription[]> {
   }
 }
 
+export async function getFilteredSubscriptions({
+  idAluno,
+  idPersonal,
+  idPlano,
+}: {
+  idAluno?: string;
+  idPersonal?: string;
+  idPlano?: string;
+}) {
+  let sql = "SELECT * FROM matricula WHERE 1=1";
+  const params: string[] = [];
+  if (idAluno) {
+    sql += " AND id_aluno = ?";
+    params.push(idAluno);
+  }
+  if (idPlano) {
+    sql += " AND id_plano = ?";
+    params.push(idPlano);
+  }
+  if (idPersonal) {
+    sql += " AND id_professor = ?";
+    params.push(idPersonal);
+  }
+
+  try {
+    const [rows] = await connection.query<RowDataPacket[]>(sql, params);
+    return rows.map(mapRowToSubscription);
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+}
+
 export async function getSubscriptionById(id: string): Promise<Subscription[]> {
   const sql = "SELECT * FROM matricula WHERE id_matricula = ?";
   try {
@@ -86,6 +118,7 @@ export async function deleteSubscription(id: string) {
 
 export default {
   getSubscriptions,
+  getFilteredSubscriptions,
   getSubscriptionById,
   createSubscription,
   updateSubscription,

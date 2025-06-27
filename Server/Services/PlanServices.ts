@@ -22,6 +22,44 @@ export async function getPlans(): Promise<Plan[]> {
   }
 }
 
+export async function getFilteredPlans({
+  nome,
+  descricao,
+  valor,
+  duracao,
+}: {
+  nome?: string;
+  descricao?: string;
+  valor?: string;
+  duracao?: string;
+}) {
+  let sql = "SELECT * FROM plano WHERE 1=1";
+  const params: string[] = [];
+  if (nome) {
+    sql += " AND nome LIKE ?";
+    params.push(`%${nome}%`);
+  }
+  if (descricao) {
+    sql += " AND descricao LIKE ?";
+    params.push(`%${descricao}%`);
+  }
+  if (valor) {
+    sql += " AND valor = ?";
+    params.push(valor);
+  }
+  if (duracao) {
+    sql += " AND duracao = ?";
+    params.push(duracao);
+  }
+
+  try {
+    const [rows] = await connection.query<RowDataPacket[]>(sql, params);
+    return rows as Plan[];
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+}
+
 export async function getPlanById(id: string): Promise<Plan[]> {
   const sql = "SELECT * FROM plano WHERE id_plano = ?";
   try {
@@ -78,6 +116,7 @@ export async function deletePlan(id: string) {
 
 export default {
   getPlans,
+  getFilteredPlans,
   getPlanById,
   createPlan,
   updatePlan,

@@ -6,8 +6,19 @@ import planServices from "../Services/PlanServices";
 import studentServices from "../Services/StudentServices";
 
 export async function getSubscriptions(req: Request, res: Response) {
+  const { idAluno, idPlano, idPersonal } = req.query;
+
   try {
-    const subscriptions = await subscriptionServices.getSubscriptions();
+    let subscriptions;
+    if (idAluno || idPlano || idPersonal) {
+      subscriptions = await subscriptionServices.getFilteredSubscriptions({
+        idAluno: idAluno as string,
+        idPlano: idPlano as string,
+        idPersonal: idPersonal as string,
+      });
+    } else {
+      subscriptions = await subscriptionServices.getSubscriptions();
+    }
 
     if (subscriptions) {
       res.status(200).json(subscriptions);

@@ -3,8 +3,20 @@ import planServices from "../Services/PlanServices";
 import Plan from "../Models/PlanModel";
 
 export async function getPlans(req: Request, res: Response) {
+  const { nome, descricao, valor, duracao } = req.query;
+
   try {
-    const plans = await planServices.getPlans();
+    let plans;
+    if (nome || descricao || valor || duracao) {
+      plans = await planServices.getFilteredPlans({
+        nome: nome as string,
+        descricao: descricao as string,
+        valor: valor as string,
+        duracao: duracao as string,
+      });
+    } else {
+      plans = await planServices.getPlans();
+    }
 
     if (plans) {
       res.status(200).json(plans);

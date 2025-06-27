@@ -24,6 +24,50 @@ export async function getPersonals(): Promise<Personal[]> {
   }
 }
 
+export async function getFilteredPersonals({
+  nome,
+  dataNascimento,
+  cpf,
+  email,
+  telefone,
+}: {
+  nome?: string;
+  dataNascimento?: string;
+  cpf?: string;
+  email?: string;
+  telefone?: string;
+}) {
+  let sql = "SELECT * FROM professor WHERE 1=1";
+  const params: string[] = [];
+  if (nome) {
+    sql += " AND nome LIKE ?";
+    params.push(`%${nome}%`);
+  }
+  if (dataNascimento) {
+    sql += " AND data_nascimento = ?";
+    params.push(dataNascimento);
+  }
+  if (cpf) {
+    sql += " AND cpf LIKE ?";
+    params.push(`%${cpf}%`);
+  }
+  if (email) {
+    sql += " AND email LIKE ?";
+    params.push(`%${email}%`);
+  }
+  if (telefone) {
+    sql += " AND telefone LIKE ?";
+    params.push(`%${telefone}%`);
+  }
+
+  try {
+    const [rows] = await connection.query<RowDataPacket[]>(sql, params);
+    return rows.map(mapRowToPersonal);
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+}
+
 export async function getPersonalById(id: string): Promise<Personal[]> {
   const sql = "SELECT * FROM professor WHERE id_professor = ?";
   try {
@@ -38,14 +82,8 @@ export async function createPersonal(Personal: Personal) {
   const sql =
     "INSERT INTO professor (nome, data_nascimento, cpf, email, telefone, data_admissao) VALUES (?, ?, ?, ?, ?, ?)";
   try {
-    const {
-      nome,
-      dataNascimento,
-      cpf,
-      email,
-      telefone,
-      dataAdmissao,
-    } = Personal;
+    const { nome, dataNascimento, cpf, email, telefone, dataAdmissao } =
+      Personal;
     const [rows] = await connection.query(sql, [
       nome,
       dataNascimento,
@@ -63,14 +101,8 @@ export async function updatePersonal(Personal: Personal, id: string) {
   const sql =
     "UPDATE professor SET nome = ?, data_nascimento = ?, cpf = ?, email = ?, telefone = ?, data_admissao = ? WHERE id_professor = ?";
   try {
-    const {
-      nome,
-      dataNascimento,
-      cpf,
-      email,
-      telefone,
-      dataAdmissao,
-    } = Personal;
+    const { nome, dataNascimento, cpf, email, telefone, dataAdmissao } =
+      Personal;
     const res = await connection.query(sql, [
       nome,
       dataNascimento,
@@ -98,6 +130,7 @@ export async function deletePersonal(id: string) {
 
 export default {
   getPersonals,
+  getFilteredPersonals,
   getPersonalById,
   createPersonal,
   updatePersonal,
