@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Breadcrumb, Button, Col, Container, Form, Row } from "react-bootstrap";
 import {
-  createStudent,
-  getStudentById,
-  updateStudent,
-} from "../../services/StudentServices";
+  createPersonal,
+  getPersonalById,
+  updatePersonal,
+} from "../../services/PersonalServices";
 import { maskCPF, maskPhone } from "../../utils/maskUtils";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -15,7 +15,6 @@ const PersonalRegisterPage = () => {
     telefone: "",
     cpf: "",
     dataNascimento: "",
-    endereco: "",
   });
 
   const navigate = useNavigate();
@@ -23,27 +22,25 @@ const PersonalRegisterPage = () => {
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    const fetchStudent = async (id: string) => {
+    const fetchPersonal = async (id: string) => {
       try {
-        const result = await getStudentById(id);
-        const student = result[0];
-        console.log(student);
+        const result = await getPersonalById(id);
+        const personal = result[0];
         setData({
-          nome: student.nome || "",
-          email: student.email || "",
-          telefone: student.telefone || "",
-          cpf: student.cpf || "",
-          dataNascimento: student.dataNascimento || "",
-          endereco: student.endereco || "",
+          nome: personal.nome || "",
+          email: personal.email || "",
+          telefone: personal.telefone || "",
+          cpf: personal.cpf || "",
+          dataNascimento: personal.dataNascimento || "",
         });
       } catch (err) {
-        console.log("Error fetching student: " + err);
-        alert("Erro ao buscar aluno.");
+        console.log("Error fetching Personal: " + err);
+        alert("Erro ao buscar personal.");
       }
     };
 
     if (id) {
-      fetchStudent(id);
+      fetchPersonal(id);
     }
   }, [id]);
 
@@ -66,36 +63,34 @@ const PersonalRegisterPage = () => {
 
     if (id) {
       try {
-        await updateStudent(id, data);
+        await updatePersonal(id, data);
         setData({
           nome: "",
           email: "",
           telefone: "",
           cpf: "",
           dataNascimento: "",
-          endereco: "",
         });
-        navigate("/alunos");
+        navigate("/personals");
       } catch (err) {
-        console.log("Erro ao atualizar aluno: " + err);
-        alert("Erro ao atualizar aluno." + err);
+        console.log("Erro ao atualizar personal: " + err);
+        alert("Erro ao atualizar personal." + err);
       }
     } else {
       try {
-        const response = await createStudent(data);
-        console.log("Student created:", response);
+        const response = await createPersonal(data);
+        console.log("Personal created:", response);
         setData({
           nome: "",
           email: "",
           telefone: "",
           cpf: "",
           dataNascimento: "",
-          endereco: "",
         });
-        navigate("/alunos");
+        navigate("/personals");
       } catch (error) {
-        console.error("Erro ao registrar aluno:", error);
-        alert("Erro ao registrar aluno. Tente novamente.");
+        console.error("Erro ao registrar personal:", error);
+        alert("Erro ao registrar personal. Tente novamente.");
       }
     }
   };
@@ -103,9 +98,9 @@ const PersonalRegisterPage = () => {
   return (
     <Container>
       <Breadcrumb>
-        <Breadcrumb.Item href="/alunos">Alunos</Breadcrumb.Item>
+        <Breadcrumb.Item href="/personals">Personal</Breadcrumb.Item>
         <Breadcrumb.Item active>
-          {id ? "Atualizar" : "Registrar"} Aluno
+          {id ? "Atualizar" : "Registrar"} personal
         </Breadcrumb.Item>
       </Breadcrumb>
 
@@ -180,18 +175,6 @@ const PersonalRegisterPage = () => {
               />
             </Form.Group>
           </Col>
-        </Row>
-        <Row>
-          <Form.Group className="mb-3">
-            <Form.Label>Endereço</Form.Label>
-            <Form.Control
-              type="text"
-              name="endereco"
-              value={data.endereco}
-              onChange={handleChange}
-              placeholder="Endereço"
-            />
-          </Form.Group>
         </Row>
 
         <Button variant="primary" type="submit">

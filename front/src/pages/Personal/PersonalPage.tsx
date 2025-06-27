@@ -9,11 +9,11 @@ import {
   Row,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { getStudents, deleteStudent } from "../../services/StudentServices";
+import { getPersonals, deletePersonal } from "../../services/PersonalServices";
 import { maskCPF, maskPhone } from "../../utils/maskUtils";
 
 const PersonalPage = () => {
-  const [students, setStudents] = useState([]);
+  const [personals, setPersonals] = useState([]);
   const [filters, setFilters] = useState({
     nome: "",
     email: "",
@@ -24,48 +24,49 @@ const PersonalPage = () => {
 
   const navigate = useNavigate();
 
-  const fetchStudents = useCallback(async () => {
+  const fetchPersonals = useCallback(async () => {
     try {
-      const data = await getStudents(filters);
-      setStudents(data);
+      const data = await getPersonals(filters);
+      console.log("Personals fetched:", data);
+      setPersonals(data);
     } catch (error) {
-      console.error("Erro ao buscar alunos:", error);
-      alert("Erro ao carregar a lista de alunos.");
+      console.error("Erro ao buscar personals:", error);
+      alert("Erro ao carregar a lista de personals.");
     }
   }, [filters]);
 
   useEffect(() => {
-    fetchStudents();
-  }, [fetchStudents, filters]);
+    fetchPersonals();
+  }, [fetchPersonals, filters]);
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este aluno?")) {
+    if (window.confirm("Tem certeza que deseja excluir este personal?")) {
       try {
-        await deleteStudent(id);
-        fetchStudents();
+        await deletePersonal(id);
+        fetchPersonals();
       } catch (error) {
-        console.error("Erro ao excluir aluno:", error);
-        alert("Erro ao excluir o aluno.");
+        console.error("Erro ao excluir personal:", error);
+        alert("Erro ao excluir o personal.");
       }
     }
   };
 
   const handleUpdate = async (id: string) => {
-    navigate(`/alunos/atualizar/${id}`);
+    navigate(`/personals/atualizar/${id}`);
   };
 
   const handleRefresh = () => {
-    fetchStudents();
+    fetchPersonals();
   };
 
   return (
     <div>
       <Breadcrumb>
-        <Breadcrumb.Item>Alunos</Breadcrumb.Item>
+        <Breadcrumb.Item>personals</Breadcrumb.Item>
       </Breadcrumb>
       <Nav>
         <Nav.Link as={Link} to="registrar">
-          <Button value={"Registrar Aluno"}>Registrar Aluno</Button>
+          <Button value={"Registrar personal"}>Registrar personal</Button>
         </Nav.Link>
       </Nav>
       <Form className="mt-3">
@@ -168,7 +169,7 @@ const PersonalPage = () => {
             <th>Telefone</th>
             <th>CPF</th>
             <th>Data de Nascimento</th>
-            <th>Cadastro</th>
+            <th>Admissao</th>
             <th>
               {" "}
               <Button variant="secondary" onClick={handleRefresh}>
@@ -178,24 +179,24 @@ const PersonalPage = () => {
           </tr>
         </thead>
         <tbody>
-          {students.map((student: any, index: number) => (
-            <tr key={student.id}>
-              <td>{student.nome}</td>
-              <td>{student.email}</td>
-              <td>{student.telefone}</td>
-              <td>{student.cpf}</td>
-              <td>{student.dataNascimento}</td>
-              <td>{student.dataCadastro}</td>
+          {personals.map((personal: any, index: number) => (
+            <tr key={personal.id}>
+              <td>{personal.nome}</td>
+              <td>{personal.email}</td>
+              <td>{personal.telefone}</td>
+              <td>{personal.cpf}</td>
+              <td>{personal.dataNascimento}</td>
+              <td>{personal.dataAdmissao}</td>
               <td>
                 <Button
                   variant="warning"
-                  onClick={() => handleUpdate(student.id)}
+                  onClick={() => handleUpdate(personal.id)}
                 >
                   ✏️
                 </Button>{" "}
                 <Button
                   variant="danger"
-                  onClick={() => handleDelete(student.id)}
+                  onClick={() => handleDelete(personal.id)}
                 >
                   🗑️
                 </Button>

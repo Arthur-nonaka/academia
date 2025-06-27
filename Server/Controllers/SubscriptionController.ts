@@ -43,15 +43,15 @@ export async function getSubscriptionById(req: Request, res: Response) {
 }
 
 export async function createSubscription(req: Request, res: Response) {
-  const { dataMatricula, status, idAluno, idPersonal, idPlano } = req.body;
+  const { status, idAluno, idPersonal, idPlano } = req.body;
 
-  if (!dataMatricula || !status || !idAluno || !idPersonal || !idPlano) {
+  if (!status || !idAluno || !idPersonal || !idPlano) {
     res.status(400).json({ message: "Dados inválidos" });
     return;
   }
 
   const subscription = new Subscription(
-    dataMatricula,
+    new Date().toISOString().split("T")[0],
     status,
     idAluno,
     idPersonal,
@@ -63,7 +63,11 @@ export async function createSubscription(req: Request, res: Response) {
     const personalExists = await personalServices.getPersonalById(idPersonal);
     const planoExists = await planServices.getPlanById(idPlano);
 
-    if (alunoExists.length === 0 || personalExists.length === 0 || planoExists.length === 0) {
+    if (
+      alunoExists.length === 0 ||
+      personalExists.length === 0 ||
+      planoExists.length === 0
+    ) {
       res.status(400).json({ message: "IDs inválidos" });
       return;
     }
@@ -86,7 +90,7 @@ export async function createSubscription(req: Request, res: Response) {
 export async function updateSubscription(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const { dataMatricula, status, idAluno, idPersonal, idPlano } = req.body;
+    const { status, idAluno, idPersonal, idPlano } = req.body;
 
     const result = await subscriptionServices.getSubscriptionById(id);
 
@@ -98,7 +102,7 @@ export async function updateSubscription(req: Request, res: Response) {
     const existingSubscription = result[0];
 
     const subscription = new Subscription(
-      dataMatricula || new Date(existingSubscription.dataMatricula),
+      existingSubscription.dataMatricula,
       status || existingSubscription.status,
       idAluno || existingSubscription.idAluno,
       idPersonal || existingSubscription.idPersonal,

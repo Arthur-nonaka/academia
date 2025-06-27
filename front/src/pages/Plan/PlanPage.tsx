@@ -148,7 +148,7 @@ const PlanPage = () => {
             <th>Nome</th>
             <th>Valor</th>
             <th>Descricao</th>
-            <th>Duracao</th>
+            <th>Duracao (mes)</th>
             <th>
               {" "}
               <Button variant="secondary" onClick={handleRefresh}>
@@ -165,10 +165,10 @@ const PlanPage = () => {
               <td>{plan.descricao}</td>
               <td>{plan.duracao}</td>
               <td>
-                <Button variant="warning" onClick={() => handleUpdate(plan.id)}>
+                <Button variant="warning" onClick={() => handleUpdate(plan.id_plano)}>
                   ✏️
                 </Button>{" "}
-                <Button variant="danger" onClick={() => handleDelete(plan.id)}>
+                <Button variant="danger" onClick={() => handleDelete(plan.id_plano)}>
                   🗑️
                 </Button>
               </td>

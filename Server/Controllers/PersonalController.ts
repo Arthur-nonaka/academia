@@ -6,8 +6,16 @@ export async function getPersonals(req: Request, res: Response) {
   try {
     const personals = await personalServices.getPersonals();
 
-    if (personals) {
-      res.status(200).json(personals);
+    const formatted = personals.map((student) => ({
+      ...student,
+      dataNascimento: new Date(student.dataNascimento)
+        .toISOString()
+        .split("T")[0],
+      dataAdmissao: new Date(student.dataAdmissao).toISOString().split("T")[0],
+    }));
+
+    if (formatted) {
+      res.status(200).json(formatted);
     } else {
       res.status(404).json({ message: "Nenhum personal encontrado" });
       return;
@@ -24,6 +32,13 @@ export async function getPersonalById(req: Request, res: Response) {
   const { id } = req.params;
   try {
     const personal = await personalServices.getPersonalById(id);
+
+    personal[0].dataNascimento = new Date(personal[0].dataNascimento)
+      .toISOString()
+      .split("T")[0];
+    personal[0].dataAdmissao = new Date(personal[0].dataAdmissao)
+      .toISOString()
+      .split("T")[0];
 
     if (personal) {
       res.status(200).json(personal);
@@ -42,7 +57,7 @@ export async function getPersonalById(req: Request, res: Response) {
 export async function createPersonal(req: Request, res: Response) {
   const { nome, dataNascimento, cpf, email, telefone } = req.body;
 
-  if (!nome || !dataNascimento || !cpf || !email || !telefone ) {
+  if (!nome || !dataNascimento || !cpf || !email || !telefone) {
     res.status(400).json({ message: "Dados inválidos" });
     return;
   }

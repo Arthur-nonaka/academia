@@ -18,5 +18,5 @@ app.use("/api", planRoutes);
 app.use("/api", subscriptionRoutes);
 
 app.listen(3001, () => {
-  console.log("htpp://localhost:" + PORT);
+  console.log("http://localhost:" + PORT);
 });

@@ -5,7 +5,6 @@ import {
   getPlanById,
   updatePlan,
 } from "../../services/PlanServices";
-import { maskCPF, maskPhone } from "../../utils/maskUtils";
 import { useNavigate, useParams } from "react-router-dom";
 
 const PlanRegisterPage = () => {
@@ -50,11 +49,7 @@ const PlanRegisterPage = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    const isFormValid = Object.values(data).every(
-      (value) => value.trim() !== ""
-    );
-
-    if (!isFormValid) {
+    if (!data.nome || !data.valor || !data.descricao || !data.duracao) {
       alert("Por favor, preencha todos os campos.");
       return;
     }
@@ -120,7 +115,7 @@ const PlanRegisterPage = () => {
             <Form.Group className="mb-3">
               <Form.Label>Valor</Form.Label>
               <Form.Control
-                type="text"
+                type="number"
                 name="valor"
                 value={data.valor}
                 onChange={handleChange}
@@ -135,9 +130,7 @@ const PlanRegisterPage = () => {
                 type="text"
                 name="descricao"
                 value={data.descricao}
-                onChange={(e) =>
-                  setData({ ...data, descricao: maskPhone(e.target.value) })
-                }
+                onChange={handleChange}
                 placeholder="Descricao"
               />
             </Form.Group>
@@ -146,12 +139,12 @@ const PlanRegisterPage = () => {
         <Row>
           <Col>
             <Form.Group className="mb-3">
-              <Form.Label>Duração</Form.Label>
+              <Form.Label>Duração (mes)</Form.Label>
               <Form.Control
                 type="text"
                 name="duracao"
                 value={data.duracao}
-                onChange={(e) => setData({ ...data, duracao: e.target.value })}
+                onChange={handleChange}
                 placeholder="Duração"
               />
             </Form.Group>
